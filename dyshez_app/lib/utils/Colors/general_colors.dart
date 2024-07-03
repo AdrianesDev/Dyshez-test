@@ -4,6 +4,9 @@ const Color pink = Color(0xFFE3026F);
 const Color pinkLinks = Color(0xFFFA4B8B);
 const Color redCancel = Color(0xFFDC2B2B);
 const Color greenSuccess = Color(0xFF11845B);
+const Color greenAuth = Color(0xFF67BD6D);
+const Color warningColor = Color(0xFFfb8500);
+
 const Color darkBlue = Color(0xFF262338);
 const Color grayColor = Color(0xFFE7E7E9);
 const Color opaqueGrayColor = Color(0xFF818181);

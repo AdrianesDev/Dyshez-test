@@ -10,7 +10,7 @@ class CustomTextfield extends StatefulWidget {
 
   final bool? isPassword;
   final TextInputType? keyboardType;
-  final TextEditingController? controller;
+  final TextEditingController controller;
   const CustomTextfield(
       {super.key,
       this.hintLabel,
@@ -19,7 +19,7 @@ class CustomTextfield extends StatefulWidget {
       this.suffixIcon,
       this.isPassword,
       this.keyboardType,
-      this.controller,
+      required this.controller,
       this.prefixIcon});
 
   @override

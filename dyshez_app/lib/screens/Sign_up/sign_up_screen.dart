@@ -1,11 +1,14 @@
+import 'package:dyshez_app/components/alert_toast.dart';
 import 'package:dyshez_app/components/custom_button.dart';
 import 'package:dyshez_app/components/custom_cuestion_text.dart';
 import 'package:dyshez_app/components/custom_textfield.dart';
 import 'package:dyshez_app/screens/Create_account/create_account_screen.dart';
 import 'package:dyshez_app/screens/Login/login_screen.dart';
 import 'package:dyshez_app/utils/Colors/general_colors.dart';
+import 'package:dyshez_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -16,7 +19,15 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   bool hidePassword = true;
+  bool hideSecondPassword = true;
   bool isVisible = false;
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController verifyPasswordController =
+      TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
 
   Widget _showPassword() {
     return IconButton(
@@ -32,6 +43,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
+  Widget _showSecondPassword() {
+    return IconButton(
+      icon: Icon(
+        hideSecondPassword ? Icons.visibility_off : Icons.visibility,
+        color: hideSecondPassword ? black.withOpacity(.60) : black,
+      ),
+      onPressed: () {
+        setState(() {
+          hideSecondPassword = !hideSecondPassword;
+        });
+      },
+    );
+  }
+
   void goToCreateAccount(BuildContext context) {
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => const CreateAnAccountScreen()));
@@ -40,6 +65,39 @@ class _SignUpScreenState extends State<SignUpScreen> {
   void goToLogin(BuildContext context) {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+  }
+
+  Future<void> signUp(BuildContext context) async {
+    try {
+      final authResponse = await supabaseClient.auth.signUp(
+        password: passwordController.text.trim(),
+        email: emailController.text.trim(),
+      );
+
+      await supabaseClient.from('users').insert({
+        'username': usernameController.text,
+        'name': nameController.text,
+        'email': emailController.text,
+        'phone': phoneController.text
+      });
+
+      AlertToast(
+              color: greenAuth,
+              icon: Icons.check_circle,
+              message: "${authResponse.user!.email!} a iniciado sesion")
+          .customToast(context);
+
+      goToCreateAccount(context);
+    } on AuthApiException catch (error) {
+      AlertToast(color: redCancel, icon: Icons.cancel, message: error.message)
+          .customToast(context);
+    } catch (error) {
+      AlertToast(
+              color: redCancel,
+              icon: Icons.cancel,
+              message: "Fallo al iniciar sesion")
+          .customToast(context);
+    }
   }
 
   @override
@@ -83,7 +141,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   SizedBox(
                     height: isSmallDevice ? 10 : 20,
                   ),
-                  const CustomTextfield(
+                  CustomTextfield(
+                    controller: usernameController,
                     hintLabel: "Username",
                     hintLabelColor: grayBoldColor,
                     isPassword: false,
@@ -92,7 +151,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   SizedBox(
                     height: isSmallDevice ? 10 : 20,
                   ),
-                  const CustomTextfield(
+                  CustomTextfield(
+                    controller: nameController,
                     hintLabel: "Nombre",
                     hintLabelColor: grayBoldColor,
                     isPassword: false,
@@ -101,7 +161,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   SizedBox(
                     height: isSmallDevice ? 10 : 20,
                   ),
-                  const CustomTextfield(
+                  CustomTextfield(
+                    controller: emailController,
                     hintLabel: "Email",
                     hintLabelColor: grayBoldColor,
                     isPassword: false,
@@ -110,7 +171,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   SizedBox(
                     height: isSmallDevice ? 10 : 20,
                   ),
-                  const CustomTextfield(
+                  CustomTextfield(
+                    controller: phoneController,
                     hintLabel: "Telefono",
                     hintLabelColor: grayBoldColor,
                     isPassword: false,
@@ -120,9 +182,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     height: isSmallDevice ? 10 : 20,
                   ),
                   CustomTextfield(
+                    controller: passwordController,
                     hintLabel: "Contraseña",
                     hintLabelColor: grayBoldColor,
-                    isPassword: true,
+                    isPassword: hidePassword,
                     suffixIcon: _showPassword(),
                     prefixIcon: Icons.lock,
                   ),
@@ -130,10 +193,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     height: isSmallDevice ? 10 : 20,
                   ),
                   CustomTextfield(
+                    controller: verifyPasswordController,
                     hintLabel: "Verificar Contraseña",
                     hintLabelColor: grayBoldColor,
-                    isPassword: true,
-                    suffixIcon: _showPassword(),
+                    isPassword: hideSecondPassword,
+                    suffixIcon: _showSecondPassword(),
                     prefixIcon: Icons.lock,
                   ),
                   SizedBox(
@@ -145,7 +209,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     text: "Crear una cuenta",
                     buttonHeight: 56,
                     buttonWidth: mobileWidth,
-                    action: () => goToCreateAccount(context),
+                    action: () => signUp(context),
                   ),
                   SizedBox(
                     height: isSmallDevice ? 10 : 20,

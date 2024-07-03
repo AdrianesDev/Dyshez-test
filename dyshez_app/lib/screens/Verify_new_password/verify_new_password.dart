@@ -1,6 +1,7 @@
 import 'package:dyshez_app/components/custom_button.dart';
 import 'package:dyshez_app/components/custom_textfield.dart';
 import 'package:dyshez_app/utils/Colors/general_colors.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -17,6 +18,9 @@ class _VerifyNewPasswordState extends State<VerifyNewPassword> {
 
   bool isVisible = false;
   bool isVisibleSecondPassword = false;
+
+  TextEditingController getNewPasswordController = TextEditingController();
+  TextEditingController verifyNewPasswordController = TextEditingController();
 
   Widget _showPassword() {
     return IconButton(
@@ -82,6 +86,7 @@ class _VerifyNewPasswordState extends State<VerifyNewPassword> {
                   height: 20,
                 ),
                 CustomTextfield(
+                  controller: getNewPasswordController,
                   hintLabel: "Nueva contraseña",
                   hintLabelColor: grayBoldColor,
                   isPassword: hidePassword,
@@ -92,6 +97,7 @@ class _VerifyNewPasswordState extends State<VerifyNewPassword> {
                   height: 20,
                 ),
                 CustomTextfield(
+                  controller: verifyNewPasswordController,
                   hintLabel: "Verificar nueva contraseña",
                   hintLabelColor: grayBoldColor,
                   isPassword: hideSecondPassword,
@@ -114,10 +120,10 @@ class _VerifyNewPasswordState extends State<VerifyNewPassword> {
                 SizedBox(
                   height: mobileHeight * 0.04,
                 ),
-                const Text(
-                  "Enviaremos un código a tu email.",
+                Text(
+                  "Si no solicitaste la recuperación de tu contraseña, por favor, ignora este mensaje. No es necesario que tomes ninguna acción adicional.",
                   style: TextStyle(
-                      fontSize: 18,
+                      fontSize: isSmallDevice ? 14 : 18,
                       fontFamily: "Poppins",
                       fontWeight: FontWeight.normal,
                       color: black),

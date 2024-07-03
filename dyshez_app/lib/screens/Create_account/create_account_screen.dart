@@ -7,8 +7,15 @@ import 'package:dyshez_app/utils/Colors/general_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-class CreateAnAccountScreen extends StatelessWidget {
+class CreateAnAccountScreen extends StatefulWidget {
   const CreateAnAccountScreen({super.key});
+
+  @override
+  State<CreateAnAccountScreen> createState() => _CreateAnAccountScreenState();
+}
+
+class _CreateAnAccountScreenState extends State<CreateAnAccountScreen> {
+  TextEditingController emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +72,8 @@ class CreateAnAccountScreen extends StatelessWidget {
                 const SizedBox(
                   height: 40,
                 ),
-                const CustomTextfield(
+                CustomTextfield(
+                  controller: emailController,
                   hintLabel: "Email",
                   hintLabelColor: grayBoldColor,
                   isPassword: false,

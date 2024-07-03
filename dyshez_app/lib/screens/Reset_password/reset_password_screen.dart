@@ -7,9 +7,15 @@ import 'package:dyshez_app/utils/Colors/general_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-class ResetPassword extends StatelessWidget {
+class ResetPassword extends StatefulWidget {
   const ResetPassword({super.key});
 
+  @override
+  State<ResetPassword> createState() => _ResetPasswordState();
+}
+
+class _ResetPasswordState extends State<ResetPassword> {
+  final TextEditingController emailController = TextEditingController();
   void goToSignUp(BuildContext context) {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => const SignUpScreen()));
@@ -54,7 +60,8 @@ class ResetPassword extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                const CustomTextfield(
+                CustomTextfield(
+                  controller: emailController,
                   hintLabel: "Correo Electronico",
                   hintLabelColor: grayBoldColor,
                   isPassword: false,

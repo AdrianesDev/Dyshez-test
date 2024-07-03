@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:dyshez_app/components/alert_toast.dart';
 import 'package:dyshez_app/components/custom_button.dart';
 import 'package:dyshez_app/components/custom_cuestion_text.dart';
 import 'package:dyshez_app/components/custom_textfield.dart';
@@ -5,6 +8,7 @@ import 'package:dyshez_app/screens/Quick_menu/order_history_screen.dart';
 import 'package:dyshez_app/screens/Reset_password/reset_password_screen.dart';
 import 'package:dyshez_app/screens/Sign_up/sign_up_screen.dart';
 import 'package:dyshez_app/utils/Colors/general_colors.dart';
+import 'package:dyshez_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -40,7 +44,38 @@ class _LoginScreenState extends State<LoginScreen> {
         context, MaterialPageRoute(builder: (context) => const SignUpScreen()));
   }
 
-  void goToOrderHistory() {
+  void goToOrderHistory(BuildContext context) async {
+    if (usernameController.text.isEmpty) {
+      return AlertToast(
+              color: warningColor,
+              icon: Icons.warning,
+              message: "Ingrese un usuario")
+          .customToast(context);
+    }
+    if (passwordController.text.isEmpty) {
+      return AlertToast(
+              color: warningColor,
+              icon: Icons.warning,
+              message: "Ingrese su contraseña")
+          .customToast(context);
+    }
+
+    //Acces credential for logging
+    if (usernameController.text != "Dyshez" ||
+        passwordController.text != "Dyshez_User.") {
+      return AlertToast(
+              color: redCancel,
+              icon: Icons.error,
+              message: "Usuario o contraseña incorrectos")
+          .customToast(context);
+    }
+    AlertToast(
+            color: greenSuccess,
+            icon: Icons.check_circle,
+            message: "Credenciales correctas")
+        .customToast(context);
+    await Future.delayed(const Duration(seconds: 1));
+
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => const OrderHistory()));
   }
@@ -52,6 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    /// [mobileWidth] & [mobileHeight] are varibles to listen the size of screen
     final mobileWidth = MediaQuery.of(context).size.width;
     final mobileHeight = MediaQuery.of(context).size.height;
     return GestureDetector(
@@ -84,7 +120,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(
                   height: mobileHeight * 0.04,
                 ),
-                const CustomTextfield(
+                CustomTextfield(
+                  controller: usernameController,
                   hintLabel: "Username",
                   hintLabelColor: grayBoldColor,
                   isPassword: false,
@@ -94,6 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: mobileHeight * 0.02,
                 ),
                 CustomTextfield(
+                  controller: passwordController,
                   hintLabel: "Password",
                   hintLabelColor: grayBoldColor,
                   isPassword: hidePassword,
@@ -109,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   text: "Iniciar Sesión",
                   buttonHeight: 56,
                   buttonWidth: mobileWidth,
-                  action: () => goToOrderHistory(),
+                  action: () => goToOrderHistory(context),
                 ),
                 const SizedBox(
                   height: 20,
